@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -54,5 +55,19 @@ public class ProductDaoImpl implements ProductDao {
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
         Integer productid =keyHolder.getKey().intValue();
         return  productid;
+    }
+
+    @Override
+    public void updateProduct(Integer productid, ProductRequest productRequest) {
+        String sql = "update product set product_name = :product_name,category=:category,image_url=:image_url,price=:price,stock=:stock,description=:description,last_modify_date=:last_modify_date";
+        Map<String,Object>map = new HashMap<>();
+        map.put("product_name",productRequest.getProduct_name());
+        map.put("category",productRequest.getCategory().name());
+        map.put("image_url",productRequest.getImage_url());
+        map.put("price",productRequest.getPrice());
+        map.put("stock",productRequest.getStock());
+        map.put("description",productRequest.getDescription());
+        map.put("last_modify_date",new Date());
+        namedParameterJdbcTemplate.update(sql,map);
     }
 }
