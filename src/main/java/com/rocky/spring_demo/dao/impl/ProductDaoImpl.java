@@ -37,6 +37,7 @@ public class ProductDaoImpl implements ProductDao {
             sql+= " AND product_name like :search";
             map.put("search", "%"+productQueryParameter.getSearch()+"%");
         }
+        sql = sql + " ORDER BY " + productQueryParameter.getOrderBy() + " "+ productQueryParameter.getSort();
         return namedParameterJdbcTemplate.query(sql,map,new ProductRowMapper());
     }
 
