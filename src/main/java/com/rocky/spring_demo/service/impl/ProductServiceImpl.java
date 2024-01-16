@@ -2,6 +2,7 @@ package com.rocky.spring_demo.service.impl;
 
 import com.rocky.spring_demo.constant.ProductCategory;
 import com.rocky.spring_demo.dao.ProductDao;
+import com.rocky.spring_demo.dto.ProductQueryParameter;
 import com.rocky.spring_demo.dto.ProductRequest;
 import com.rocky.spring_demo.module.Product;
 import com.rocky.spring_demo.service.ProductService;
@@ -17,8 +18,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts(ProductCategory category,String search) {
-        return productDao.getProducts(category,search);
+    public List<Product> getProducts(ProductQueryParameter productQueryParameter) {
+        return productDao.getProducts(productQueryParameter);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.rocky.spring_demo.service;
 
 import com.rocky.spring_demo.constant.ProductCategory;
 import com.rocky.spring_demo.dao.ProductDao;
+import com.rocky.spring_demo.dto.ProductQueryParameter;
 import com.rocky.spring_demo.dto.ProductRequest;
 import com.rocky.spring_demo.module.Product;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<Product> getProducts(ProductCategory category,String search);
+    List<Product> getProducts(ProductQueryParameter productQueryParameter);
 
     Product getProductByid(Integer productid);
 

@@ -1,6 +1,7 @@
 package com.rocky.spring_demo.controller;
 
 import com.rocky.spring_demo.constant.ProductCategory;
+import com.rocky.spring_demo.dto.ProductQueryParameter;
 import com.rocky.spring_demo.dto.ProductRequest;
 import com.rocky.spring_demo.module.Product;
 import com.rocky.spring_demo.service.ProductService;
@@ -21,8 +22,12 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(@RequestParam (required = false)ProductCategory category,
-    @RequestParam(required = false) String search){
-        List<Product> productList  =  productService.getProducts(category,search);
+                                                                                 @RequestParam(required = false) String search)
+    {
+        ProductQueryParameter productQueryParameter = new ProductQueryParameter();
+        productQueryParameter.setCategory(category);
+        productQueryParameter.setSearch(search);
+        List<Product> productList  =  productService.getProducts(productQueryParameter);
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
