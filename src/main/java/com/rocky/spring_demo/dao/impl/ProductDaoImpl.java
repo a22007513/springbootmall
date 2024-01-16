@@ -1,5 +1,6 @@
 package com.rocky.spring_demo.dao.impl;
 
+import com.rocky.spring_demo.constant.ProductCategory;
 import com.rocky.spring_demo.dao.ProductDao;
 import com.rocky.spring_demo.dto.ProductRequest;
 import com.rocky.spring_demo.mapper.ProductRowMapper;
@@ -22,6 +23,21 @@ import java.util.Map;
 public class ProductDaoImpl implements ProductDao {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Override
+    public List<Product> getProducts(ProductCategory category,String search) {
+        String sql ="select product_id,product_name,category,image_url,price,stock,description,create_date,last_modify_date from product where 1=1";
+        Map<String,Object> map = new HashMap<>();
+        if(category!=null){
+            sql += " AND category = :category";
+            map.put("category",category.name());
+        }
+        if(search!=null){
+            sql+= " AND product_name like :search";
+            map.put("search", "%"+search+"%");
+        }
+        return namedParameterJdbcTemplate.query(sql,map,new ProductRowMapper());
+    }
 
     @Override
     public Product getProductByid(Integer productId) {

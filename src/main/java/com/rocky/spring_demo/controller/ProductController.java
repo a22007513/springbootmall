@@ -1,5 +1,6 @@
 package com.rocky.spring_demo.controller;
 
+import com.rocky.spring_demo.constant.ProductCategory;
 import com.rocky.spring_demo.dto.ProductRequest;
 import com.rocky.spring_demo.module.Product;
 import com.rocky.spring_demo.service.ProductService;
@@ -9,11 +10,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+
+import static com.sun.xml.internal.ws.api.model.wsdl.WSDLBoundOperation.ANONYMOUS.required;
 
 @RestController
 public class ProductController {
     @Autowired
     private ProductService productService;
+
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts(@RequestParam (required = false)ProductCategory category,
+    @RequestParam(required = false) String search){
+        List<Product> productList  =  productService.getProducts(category,search);
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
 
     @GetMapping("/products/{productid}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer productid){
