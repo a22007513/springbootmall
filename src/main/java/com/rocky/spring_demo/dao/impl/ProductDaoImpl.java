@@ -29,14 +29,8 @@ public class ProductDaoImpl implements ProductDao {
     public Integer countProducts(ProductQueryParameter productQueryParameter) {
         String sql = "select count(*) from product where 1=1";
         Map<String,Object> map = new HashMap<>();
-        if(productQueryParameter.getCategory()!=null){
-            sql += " AND category = :category";
-            map.put("category",productQueryParameter.getCategory().name());
-        }
-        if(productQueryParameter.getSearch()!=null){
-            sql+= " AND product_name like :search";
-            map.put("search", "%"+productQueryParameter.getSearch()+"%");
-        }
+        //filter query parameter
+        sql = addFilteringSql(sql,map,productQueryParameter);
         Integer total = namedParameterJdbcTemplate.queryForObject(sql,map,Integer.class);
         return total;
     }
@@ -45,15 +39,10 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> getProducts(ProductQueryParameter productQueryParameter) {
         String sql ="select product_id,product_name,category,image_url,price,stock,description,create_date,last_modify_date from product where 1=1";
         Map<String,Object> map = new HashMap<>();
-        //query parameter define
-        if(productQueryParameter.getCategory()!=null){
-            sql += " AND category = :category";
-            map.put("category",productQueryParameter.getCategory().name());
-        }
-        if(productQueryParameter.getSearch()!=null){
-            sql+= " AND product_name like :search";
-            map.put("search", "%"+productQueryParameter.getSearch()+"%");
-        }
+
+        //filter query parameter
+        sql = addFilteringSql(sql,map,productQueryParameter);
+
         //sort
         sql = sql + " ORDER BY " + productQueryParameter.getOrderBy() + " "+ productQueryParameter.getSort();
         sql = sql + " LIMIT :limit OFFSET :offset";
@@ -116,5 +105,17 @@ public class ProductDaoImpl implements ProductDao {
         Map<String,Object> map = new HashMap<>();
         map.put("productid",productid);
         namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    private String addFilteringSql(String sql,Map<String,Object>map,ProductQueryParameter productQueryParameter){
+        if(productQueryParameter.getCategory()!=null){
+            sql += " AND category = :category";
+            map.put("category",productQueryParameter.getCategory().name());
+        }
+        if(productQueryParameter.getSearch()!=null){
+            sql+= " AND product_name like :search";
+            map.put("search", "%"+productQueryParameter.getSearch()+"%");
+        }
+        return sql;
     }
 }
