@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface ProductService {
 
+    Integer countProducts(ProductQueryParameter productQueryParameter);
     List<Product> getProducts(ProductQueryParameter productQueryParameter);
 
     Product getProductByid(Integer productid);

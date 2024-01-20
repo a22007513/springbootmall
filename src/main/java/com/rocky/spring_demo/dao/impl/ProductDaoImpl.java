@@ -26,8 +26,8 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts(ProductQueryParameter productQueryParameter) {
-        String sql ="select product_id,product_name,category,image_url,price,stock,description,create_date,last_modify_date from product where 1=1";
+    public Integer countProducts(ProductQueryParameter productQueryParameter) {
+        String sql = "select count(*) from product where 1=1";
         Map<String,Object> map = new HashMap<>();
         if(productQueryParameter.getCategory()!=null){
             sql += " AND category = :category";
@@ -37,7 +37,28 @@ public class ProductDaoImpl implements ProductDao {
             sql+= " AND product_name like :search";
             map.put("search", "%"+productQueryParameter.getSearch()+"%");
         }
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql,map,Integer.class);
+        return total;
+    }
+
+    @Override
+    public List<Product> getProducts(ProductQueryParameter productQueryParameter) {
+        String sql ="select product_id,product_name,category,image_url,price,stock,description,create_date,last_modify_date from product where 1=1";
+        Map<String,Object> map = new HashMap<>();
+        //query parameter define
+        if(productQueryParameter.getCategory()!=null){
+            sql += " AND category = :category";
+            map.put("category",productQueryParameter.getCategory().name());
+        }
+        if(productQueryParameter.getSearch()!=null){
+            sql+= " AND product_name like :search";
+            map.put("search", "%"+productQueryParameter.getSearch()+"%");
+        }
+        //sort
         sql = sql + " ORDER BY " + productQueryParameter.getOrderBy() + " "+ productQueryParameter.getSort();
+        sql = sql + " LIMIT :limit OFFSET :offset";
+        map.put("limit",productQueryParameter.getLimit());
+        map.put("offset",productQueryParameter.getOffset());
         return namedParameterJdbcTemplate.query(sql,map,new ProductRowMapper());
     }
 

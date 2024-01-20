@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface ProductDao {
 
+     Integer countProducts(ProductQueryParameter productQueryParameter);
+
      List<Product> getProducts(ProductQueryParameter productQueryParameter);
      Product getProductByid(Integer productid);
 
