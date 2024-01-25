@@ -24,6 +24,20 @@ public class UserDaoImp implements UserDao {
     NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
+    public User getUserByEmail(String email) {
+        String sql = "select user_id,email,password,create_date,last_modify_date from user where email=:email";
+        Map<String,Object> map = new HashMap<>();
+        map.put("email",email);
+        List<User> userList = namedParameterJdbcTemplate.query(sql,map,new UserRowMapper());
+        if(userList.size()!=0){
+            return userList.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
     public Integer createUser(UserRequest userRequest) {
         String sql = "INSERT INTO user (email,password,create_date,last_modify_date) VALUES" +
                 "(:email,:password,:create_date,:last_modify_date)";
